@@ -13,7 +13,7 @@ Repo for the ColumbusRadio project.
 - Author: gbmhunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 - Created: 2015-01-01
 - Last Modified: 2015-01-01
-- Version: v1.0.0.1
+- Version: v1.0.0.2
 - Company: MbeddedNinja
 - Project: ColumbusRadio
 - Language(s): Bash, Python
@@ -40,7 +40,7 @@ Installation
 3. Insert the SD card into RaspberryPi B+ and connect ethernet cable.
 4. Go to :code:`volumio.local/` on your browser. Naviagte to the settings and rename the :code:`volumio` to :code:`columbus`.
 5. Copy repository onto the RaspberryPi. This can be done with the following rsync command on a UNIX host system:
-   :bash:`rsync -avz /home/gbmhunter/GoogleDrive/Projects/ColumbusRadio/ root@columbus:~/ColumbusRadio
+   :bash:`rsync -avz /home/gbmhunter/GoogleDrive/Projects/ColumbusRadio/ root@columbus:~/ColumbusRadio`
 6. SSH into the RaspberryPi as the root user from a UNIX-type system with the command:
    :bash:`ssh -l root volumio`
    Note: The default password is :code:`volumio`.
@@ -68,6 +68,7 @@ Changelog
 ========= ========== ===================================================================================================
 Version    Date       Comment
 ========= ========== ===================================================================================================
+v1.0.0.2  2015-01-01 Added missing code termination character in README.
 v1.0.0.1  2015-01-01 Fixed the bullet-point numbering in the README.
 v1.0.0.0  2015-01-01 Initial commit. Columbus radio up and running. Hardware UI script working with two threads (one for controlling the radio's knobs, and the other for monitoring internet connectivity). Setup script added, but may not work correctly, as it has been un-tested after some minor tweaks where done.
 ========= ========== ===================================================================================================
