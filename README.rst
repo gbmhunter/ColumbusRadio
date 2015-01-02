@@ -12,13 +12,13 @@ Repo for the ColumbusRadio project.
 
 - Author: gbmhunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 - Created: 2015-01-01
-- Last Modified: 2015-01-01
-- Version: v1.0.0.2
+- Last Modified: 2015-01-02
+- Version: v1.0.1.0
 - Company: MbeddedNinja
 - Project: ColumbusRadio
 - Language(s): Bash, Python
 - Compiler: n/a
-- uC Model: n/a
+- uC Model: BCM2835 (part of the BCM2708 family)
 - Computer Architecture: RaspberryPi B+
 - Operating System: Volumio v1.51
 - Documentation Format: Doxygen
@@ -68,6 +68,7 @@ Changelog
 ========= ========== ===================================================================================================
 Version    Date       Comment
 ========= ========== ===================================================================================================
+v1.0.1.0  2015-01-02 Added the correct RaspberryPi CPU chip part number to the README. Added a 'Graveyard' section to the hardware-ui.py script and move appropriate commeneted-out code into this section. Tidyed up some variable names so that they follow convention. Added more code comments.
 v1.0.0.2  2015-01-01 Added missing code termination character in README.
 v1.0.0.1  2015-01-01 Fixed the bullet-point numbering in the README.
 v1.0.0.0  2015-01-01 Initial commit. Columbus radio up and running. Hardware UI script working with two threads (one for controlling the radio's knobs, and the other for monitoring internet connectivity). Setup script added, but may not work correctly, as it has been un-tested after some minor tweaks where done.

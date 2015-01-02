@@ -92,25 +92,6 @@ NEXT_TRACK_POT_TOLERANCE = 10               # Need a higher tolerance for the ne
 NEXT_TRACK_POT_MAX_TRIGGER_RATE_MS = 2000   # Maximum rate that next track events can fire at when the next track pot is turned.
 
 #---------------------------------#
-#------ SETUP EXIT HANDLER -------#
-#---------------------------------#
-
-'''
-def ExitHandler(signal, frame):
-    print 'ExitHandler called.'
-    # Turn of the bulb
-    GPIO.output(CONN_BULB, False)
-    print 'Signalling for thread to stop...'
-    internetCheckThread.stop()
-    print 'Waiting for internetCheckThread to exit...'
-    internetCheckThread.join()
-    print 'Python script hard-ui-v2.py is exiting!'
-    sys.exit(0)
-
-#atexit.register(ExitHandler)
-signal.signal(signal.SIGINT, ExitHandler)'''
-
-#---------------------------------#
 #---------- GPIO SETUP -----------#
 #---------------------------------#
  
@@ -214,16 +195,11 @@ class InternetCheck(threading.Thread):
         time.sleep(5.0)
     # END | def do_something(self):
 # END | class InternetCheck(threading.Thread):
- 
-#t1 = threading.Thread(target=InternetCheckThread)
-#t1.start()
-#t1.join()
 
 
 #----------------------------------------------------#
 #---------------- KNOB CONTROL THREAD ---------------#
 #----------------------------------------------------#
-
 
 
 # @brief    Read's SPI data from MCP3008 chip, 8 possible adc's (0 thru 7).
@@ -265,18 +241,23 @@ def ReadAdc(adcnum, clockpin, mosipin, misopin, cspin):
 
 
 
-# @brief    A class to hold all the information for a single potentiometer.g
+# @brief    A class to hold all the information for a single potentiometer.
 class Potentiometer:
     channelNum = 0
+
+    # @brief    This variable stores the last ADC value which caused a 'has changed' event to occur.
     lastRead = 0
+
+    # @brief    Gets set to true if a 'has changed' event occurs. This must be reset to False manually after handling the event. 
     hasChanged = False
 
-    # Used to store the time in milli-seconds since the potentiometer "hasChanged" event was triggered
+    # @brief    Used to store the time in milli-seconds since the potentiometer "hasChanged" event was triggered.
     lastChangedMs = 0
 
-    # Used to determine the maximum rate the "has changed" event will fire at
+    # @brief    Used to determine the maximum rate the "has changed" event will fire at.
     maxTrigRateMs = 0
 
+    # @brief    The latest ADC value reading from the potentiometer gets stored in this variable.
     adcVal = 0
     changedBy = 0
 
@@ -284,6 +265,10 @@ class Potentiometer:
     tolerance = 5
 # END | class Potentiometer:
 
+# @brief    Class to control the 2 active dials on front of the Columbus radio.
+# @details  This class measures the ADC readings from the 2 potentiometers, filters the results, and
+#           sends appropriate commands based on these results to control the volume and 'next track' 
+#           functionality respectively.
 class KnobControl(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -369,17 +354,17 @@ class KnobControl(threading.Thread):
 
         # Potentiometer 0 is for controlling the volume
         if(self.potentiometers[0].hasChanged):
-            set_volume = self.potentiometers[0].adcVal / 10.24           # convert 10bit adc0 (0-1024) trim pot read into 0-100 volume level
-            set_volume = round(set_volume)          # round out decimal value
-            set_volume = int(set_volume)            # cast volume as integer
+            setVolume = self.potentiometers[0].adcVal / 10.24           # convert 10bit adc0 (0-1024) trim pot read into 0-100 volume level
+            setVolume = round(setVolume)          # round out decimal value
+            setVolume = int(setVolume)            # cast volume as integer
 
-            print 'Volume = {volume}%' .format(volume = set_volume)
+            print 'Volume = {volume}%' .format(volume = setVolume)
 
             # Build up a command-line command
-            set_vol_cmd = 'sudo amixer cset numid=1 -- {volume}% > /dev/null' .format(volume = set_volume)
+            setVolCmd = 'sudo amixer cset numid=1 -- {volume}% > /dev/null' .format(volume = setVolume)
 
             # Send the set volume command to the system and run as if from the command-line
-            os.system(set_vol_cmd)
+            os.system(setVolCmd)
 
             # Save the potentiometer reading for the next loop
             self.potentiometers[0].lastRead = self.potentiometers[0].adcVal
@@ -441,19 +426,22 @@ def main(args):
             print 'len(threads) = ', len(threads)
         
         try:
-            print 'In try block.'
+            if DEBUG:
+                print 'In try block.'
             # Join all threads using a timeout so it doesn't block
             # Filter out threads which have been joined or are None
             for i in range(len(threads)):
                 # Make sure thread still exists
                 if threads[i] is not None:
-                    print 'Attemping to join()...'
+                    if DEBUG:
+                        print 'Attemping to join()...'
                     threads[i].join(1)
                     if threads[i].isAlive() is False:
-                        print 'isAlive() is False, removing thread from list...'
+                        if DEBUG:
+                            print 'isAlive() is False, removing thread from list...'
                         threads.pop(i)
-            
-            print 'Exiting try block...'
+            if DEBUG:
+                print 'Exiting try block...'
         except KeyboardInterrupt:
             print "Ctrl-c received! Sending kill to threads..."
             for t in threads:
@@ -466,6 +454,32 @@ def main(args):
     print 'main() is returning...'
 
 if __name__ == '__main__':
-  main(sys.argv)
+    main(sys.argv)
 
+#----------------------------------------------------#
+#--------------------- GRAVEYARD --------------------#
+#----------------------------------------------------#
     
+
+#------ SETUP EXIT HANDLER -------#
+
+'''
+def ExitHandler(signal, frame):
+    print 'ExitHandler called.'
+    # Turn of the bulb
+    GPIO.output(CONN_BULB, False)
+    print 'Signalling for thread to stop...'
+    internetCheckThread.stop()
+    print 'Waiting for internetCheckThread to exit...'
+    internetCheckThread.join()
+    print 'Python script hard-ui-v2.py is exiting!'
+    sys.exit(0)
+
+#atexit.register(ExitHandler)
+signal.signal(signal.SIGINT, ExitHandler)'''
+
+#------ THREADING -------#
+
+#t1 = threading.Thread(target=InternetCheckThread)
+#t1.start()
+#t1.join()

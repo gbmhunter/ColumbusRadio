@@ -11,4 +11,5 @@
 # Launch python script, that should be in the same
 # directory as this file, however, we still need to specify the
 # absolute path
+# This assumes the ColumbusRadio repo was cloned into ~/ColumbusRadio
 sudo python ~/ColumbusRadio/hardware-ui/hardware-ui.py 
